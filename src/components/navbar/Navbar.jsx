@@ -1,10 +1,16 @@
 import Links from "@/components/navbar/links/Links";
+import styles from "./navbar.modules.css"
+import Link from "next/link";
 
 const NavBar = () => {
     return (
-        <div>
-            <div>Logo</div>
-            <Links></Links>
+        <div className={styles.container}>
+            <Link href="/" className={styles.logo}>Logo</Link>
+
+            <div>
+                <Links></Links>
+            </div>
+
         </div>
     )
 }

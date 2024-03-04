@@ -1,6 +1,11 @@
-import Link from "next/link";
+//  if your component use any user interaction
+"use client";
+import NavLink from "@/components/navbar/links/navlinks/NavLink";
+import styles from "./links.module.css";
+import {useState} from "react";
 
 const Links = () => {
+    const [open, setOpen] = useState(false);
     const links = [
         {
             title: "Homepage",
@@ -20,9 +25,35 @@ const Links = () => {
         },
     ];
 
+    const session = true
+    const isAdmin = true
+
     return (
-        <div>
-            {links.map ((link) => <Link href={link.path} key={link.title}>{link.title}</Link>)}
+        <div className={styles.container}>
+            <div className={styles.links}>
+                {links.map((link) => <NavLink item={link} key={link.title}/>)}
+                {session ?
+                    (
+                        <>
+                            {isAdmin && <NavLink item={{title: "Admin", path: "/admin"}}/>}
+                            <button className={styles.logout}>Logout</button>
+                        </>
+                    )
+                    : (<NavLink item={{title: "Login", path: "/login"}}/>)
+                }
+            </div>
+            <button
+                className={styles.menuButton}
+
+                onClick={() => setOpen((prev) => !prev)}
+            > Menu </button>
+            {open && (
+                <div className={styles.mobileLinks}>
+                    {links.map((link) => (
+                        <NavLink item={link} key={link.title}/>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
