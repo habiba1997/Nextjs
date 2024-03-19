@@ -14,7 +14,7 @@ export const generateMetadata = async ({ params }) => {
 
     return {
         title: post.title,
-        description: post.desc,
+        description: post.body,
     };
 };
 const getData = async (postId) => {
