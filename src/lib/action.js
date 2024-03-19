@@ -3,11 +3,11 @@
 
 import {revalidatePath} from "next/cache";
 import {connectToDb} from "@/lib/utils";
-import {Post} from "@/lib/models";
+import {Post, User} from "@/lib/models";
 import {signIn, signOut} from "@/lib/auth";
 
 
-export const addPost = async  (formData, prevState) => {
+export const addPost = async (formData, prevState) => {
     // const title = formData.get("title");
     // const desc = formData.get("desc");
     // const slug = formData.get("slug");
@@ -53,14 +53,59 @@ export const deletePost = async (formData) => {
 };
 
 export const handleGithubLogin = async () => {
-  "use server";
-  await signIn("github");
+    "use server";
+    await signIn("github");
 };
 export const handleLogout = async () => {
     "use server";
     await signOut();
 };
-//
+
+export const register = async (formData, previousState) => {
+    const {username, email, password, img, passwordRepeat} =
+        Object.fromEntries(formData);
+
+    // check if passwords are matching
+    if (password !== passwordRepeat) {
+        console.log("Passwords do not match")
+        return {error: "Passwords do not match"};
+    }
+
+    // password matches
+    try {
+        await connectToDb();
+
+        // check if user exist in database
+        const user = await User.findOne({
+            $or: [{username: username}, {email: email}],
+        });
+
+        if (user) {
+            console.log("Username already exists")
+            return {error: "Username already exists"};
+        }
+
+        // const salt = await bcrypt.genSalt(10);
+        // const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newUser = new User({
+            username,
+            email,
+            // password: hashedPassword,
+            password: password,
+            img,
+        });
+
+        await newUser.save();
+        console.log("saved to db");
+
+        return {success: true};
+    } catch (err) {
+        console.log(err);
+        return {error: "Something went wrong!"};
+    }
+};
+
 // export const addUser = async (prevState,formData) => {
 //   const { username, email, password, img } = Object.fromEntries(formData);
 //
@@ -97,46 +142,8 @@ export const handleLogout = async () => {
 //     return { error: "Something went wrong!" };
 //   }
 // };
-//
 
-//
-// export const register = async (previousState, formData) => {
-//   const { username, email, password, img, passwordRepeat } =
-//     Object.fromEntries(formData);
-//
-//   if (password !== passwordRepeat) {
-//     return { error: "Passwords do not match" };
-//   }
-//
-//   try {
-//     connectToDb();
-//
-//     const user = await User.findOne({ username });
-//
-//     if (user) {
-//       return { error: "Username already exists" };
-//     }
-//
-//     const salt = await bcrypt.genSalt(10);
-//     const hashedPassword = await bcrypt.hash(password, salt);
-//
-//     const newUser = new User({
-//       username,
-//       email,
-//       password: hashedPassword,
-//       img,
-//     });
-//
-//     await newUser.save();
-//     console.log("saved to db");
-//
-//     return { success: true };
-//   } catch (err) {
-//     console.log(err);
-//     return { error: "Something went wrong!" };
-//   }
-// };
-//
+
 // export const login = async (prevState, formData) => {
 //   const { username, password } = Object.fromEntries(formData);
 //
