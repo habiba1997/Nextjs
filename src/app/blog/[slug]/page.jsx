@@ -4,6 +4,19 @@ import {Suspense} from "react";
 import PostUser from "@/components/postUser/postUser";
 import {getPost} from "@/lib/data";
 
+
+//  because here the metadata depend on fetched data
+export const generateMetadata = async ({ params }) => {
+    const { slug } = params;
+
+    // when you try to fetch same data twice or multiple times, nextjs fetch only once
+    const post = await getPost(slug);
+
+    return {
+        title: post.title,
+        description: post.desc,
+    };
+};
 const getData = async (postId) => {
     const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
 
