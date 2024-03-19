@@ -11,7 +11,7 @@ const NavigationTestPage = () => {
 
   const q = searchParams.get("q")
 
-  console.log(q)
+  // console.log(q)
 
   const handleClick = ()=>{
     console.log("clicked")

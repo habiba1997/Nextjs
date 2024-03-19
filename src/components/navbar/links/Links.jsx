@@ -3,40 +3,48 @@
 import NavLink from "@/components/navbar/links/navlinks/NavLink";
 import styles from "./links.module.css";
 import {useState} from "react";
+import {handleLogout} from "@/lib/action";
+// import {auth} from "@/lib/auth";
 
-const Links = () => {
+const links = [
+    {
+        title: "Homepage",
+        path: "/",
+    },
+    {
+        title: "About",
+        path: "/about",
+    },
+    {
+        title: "Contact",
+        path: "/contact",
+    },
+    {
+        title: "Blog",
+        path: "/blog",
+    },
+];
+
+// NOTE: async is used in SERVER side component
+// BUT state (open, setOpen) can ONLY be used in client side component
+const Links = ({session}) => {
     const [open, setOpen] = useState(false);
-    const links = [
-        {
-            title: "Homepage",
-            path: "/",
-        },
-        {
-            title: "About",
-            path: "/about",
-        },
-        {
-            title: "Contact",
-            path: "/contact",
-        },
-        {
-            title: "Blog",
-            path: "/blog",
-        },
-    ];
 
-    const session = true
+
+    // const session = await auth() => add it into navbar component
     const isAdmin = true
 
     return (
         <div className={styles.container}>
             <div className={styles.links}>
                 {links.map((link) => <NavLink item={link} key={link.title}/>)}
-                {session ?
+                {session && session.user ?
                     (
                         <>
                             {isAdmin && <NavLink item={{title: "Admin", path: "/admin"}}/>}
-                            <button className={styles.logout}>Logout</button>
+                            <form action={handleLogout}>
+                                <button className={styles.logout}>Logout</button>
+                            </form>
                         </>
                     )
                     : (<NavLink item={{title: "Login", path: "/login"}}/>)

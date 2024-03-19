@@ -4,6 +4,7 @@
 import {revalidatePath} from "next/cache";
 import {connectToDb} from "@/lib/utils";
 import {Post} from "@/lib/models";
+import {signIn, signOut} from "@/lib/auth";
 
 
 export const addPost = async  (formData, prevState) => {
@@ -50,6 +51,15 @@ export const deletePost = async (formData) => {
         return {error: "Something went wrong!"};
     }
 };
+
+export const handleGithubLogin = async () => {
+  "use server";
+  await signIn("github");
+};
+export const handleLogout = async () => {
+    "use server";
+    await signOut();
+};
 //
 // export const addUser = async (prevState,formData) => {
 //   const { username, email, password, img } = Object.fromEntries(formData);
@@ -88,15 +98,7 @@ export const deletePost = async (formData) => {
 //   }
 // };
 //
-// export const handleGithubLogin = async () => {
-//   "use server";
-//   await signIn("github");
-// };
-//
-// export const handleLogout = async () => {
-//   "use server";
-//   await signOut();
-// };
+
 //
 // export const register = async (previousState, formData) => {
 //   const { username, email, password, img, passwordRepeat } =

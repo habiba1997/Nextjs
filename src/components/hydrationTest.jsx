@@ -4,7 +4,7 @@ const HydrationTest = () => {
 
   const a = Math.random();
   
-  console.log(a);
+  // console.log(a);
 
   return (
     <div>{a}</div>
