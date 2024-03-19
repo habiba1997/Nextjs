@@ -15,11 +15,14 @@ export default function RootLayout({children}) {
     return (
         <html lang="en">
         <body className={inter.className}>
+        {/*even if you wrap the application with a client side component, its just a wrapper, rest of applications are server side components*/}
+        {/* <ClientSideProviderTest> */}
         <div className="container">
             <Navbar/>
             {children}
             <Footer/>
         </div>
+        {/* </ClientSideProviderTest> */}
         </body>
         </html>
     );

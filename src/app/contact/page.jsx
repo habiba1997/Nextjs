@@ -1,7 +1,10 @@
 // "use client";
 import Image from "next/image";
 import styles from "./contact.module.css";
+// import dynamic from "next/dynamic";
+// import HydrationTest from "@/components/hydrationTest";
 
+// const HydrationTestNoSSR = dynamic(()=>import("@/components/hydrationTest"), {ssr: false})
 
 export const metadata = {
     title: "Contact Page",
@@ -16,15 +19,15 @@ const ContactPage = () => {
     return (
         <div className={styles.container}>
             <div className={styles.imgContainer}>
-                <Image src="/contact.png" alt="" fill className={styles.img}/>
+                <Image src="/contact.png" alt="" fill className={styles.img} />
             </div>
             <div className={styles.formContainer}>
                 {/* <HydrationTestNoSSR/> */}
                 {/* <div suppressHydrationWarning>{a}</div> */}
                 <form action="" className={styles.form}>
-                    <input type="text" placeholder="Name and Surname"/>
-                    <input type="text" placeholder="Email Address"/>
-                    <input type="text" placeholder="Phone Number (Optional)"/>
+                    <input type="text" placeholder="Name and Surname" />
+                    <input type="text" placeholder="Email Address" />
+                    <input type="text" placeholder="Phone Number (Optional)" />
                     <textarea
                         name=""
                         id=""

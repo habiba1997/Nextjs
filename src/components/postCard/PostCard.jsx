@@ -3,6 +3,7 @@ import styles from "./postCard.module.css"
 import Link from "next/link"
 
 const PostCard = ({post}) => {
+
     return (
         <div className={styles.container}>
             <div className={styles.top}>
