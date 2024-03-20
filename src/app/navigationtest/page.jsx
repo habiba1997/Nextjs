@@ -14,7 +14,6 @@ const NavigationTestPage = () => {
   // console.log(q)
 
   const handleClick = ()=>{
-    console.log("clicked")
     // router.push("/")
     // router.replace("/" ) // won't be saved in browser history
     // router.refresh("/") // re-render page

@@ -5,14 +5,12 @@ import {revalidatePath} from "next/cache";
 import {connectToDb} from "@/lib/utils";
 import {Post, User} from "@/lib/models";
 import {signIn, signOut} from "@/lib/auth";
-
+import bcrypt from "bcrypt";
 
 export const addPost = async (formData, prevState) => {
     // const title = formData.get("title");
     // const desc = formData.get("desc");
     // const slug = formData.get("slug");
-    console.log("form data", formData)
-    console.log("Object.fromEntries(formData)", Object.fromEntries(formData))
     const {title, body, slug, userId} = Object.fromEntries(formData);
 
     try {
@@ -25,16 +23,15 @@ export const addPost = async (formData, prevState) => {
         });
 
         await newPost.save();
-        console.log("saved to db");
+        console.log("post saved to db");
         // invalidate the cache of get requests in /blog
         revalidatePath("/blog");
         revalidatePath("/admin");
     } catch (err) {
-        console.log(err);
+        console.log("error add post to database: ", err);
         return {error: "Something went wrong!"};
     }
 };
-
 export const deletePost = async (formData) => {
     const {id} = Object.fromEntries(formData);
 
@@ -42,16 +39,15 @@ export const deletePost = async (formData) => {
         await connectToDb();
 
         await Post.findByIdAndDelete(id);
-        console.log("deleted from db");
+        console.log("post deleted from db");
 
         revalidatePath("/blog");
         revalidatePath("/admin");
     } catch (err) {
-        console.log(err);
+        console.log("find post and delete it ", err);
         return {error: "Something went wrong!"};
     }
 };
-
 export const handleGithubLogin = async () => {
     "use server";
     await signIn("github");
@@ -81,31 +77,45 @@ export const register = async (formData, previousState) => {
         });
 
         if (user) {
-            console.log("Username already exists")
+            console.log("Username/email already exists")
             return {error: "Username already exists"};
         }
 
-        // const salt = await bcrypt.genSalt(10);
-        // const hashedPassword = await bcrypt.hash(password, salt);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new User({
             username,
             email,
-            // password: hashedPassword,
-            password: password,
+            password: hashedPassword,
             img,
         });
 
         await newUser.save();
-        console.log("saved to db");
+        console.log("user saved to db");
 
         return {success: true};
     } catch (err) {
-        console.log(err);
+        console.log("registration error : ", err);
         return {error: "Something went wrong!"};
     }
 };
 
+export const login = async (formData, prevState) => {
+    const {username, password} = Object.fromEntries(formData);
+
+    try {
+        console.log(username, password)
+        await signIn("credentials", {username, password});
+    } catch (err) {
+        console.log("credentials sign in error: ", err);
+
+        if (err.message.includes("CredentialsSignin")) {
+            return {error: "Invalid username or password"};
+        }
+        throw err;
+    }
+};
 // export const addUser = async (prevState,formData) => {
 //   const { username, email, password, img } = Object.fromEntries(formData);
 //
@@ -144,17 +154,4 @@ export const register = async (formData, previousState) => {
 // };
 
 
-// export const login = async (prevState, formData) => {
-//   const { username, password } = Object.fromEntries(formData);
-//
-//   try {
-//     await signIn("credentials", { username, password });
-//   } catch (err) {
-//     console.log(err);
-//
-//     if (err.message.includes("CredentialsSignin")) {
-//       return { error: "Invalid username or password" };
-//     }
-//     throw err;
-//   }
-// };
+
