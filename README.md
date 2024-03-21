@@ -1,5 +1,7 @@
 This is a ReadMe.md file explaining [Next.js](https://nextjs.org/)
 
+This is the implementation of crash course [Youtube Crash Course](https://www.youtube.com/watch?v=vCOSTG10Y4o)
+
 # Getting Started
 
 To create a new Nextjs project folder:
@@ -35,15 +37,17 @@ nextjs project file
 ```
 
 ### App Router
-It allows to navigate between our pages easily, in react we need a library and some configurations to do that in nextjs we are able to do this by using app folder, and  we can create all our pages using this app directory 
+
+It allows to navigate between our pages easily, in react we need a library and some configurations to do that in nextjs
+we are able to do this by using app folder, and we can create all our pages using this app directory
 
 You can start editing the page by modifying `app/page.jsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and
 load Inter, a custom Google Font.
 
-
 ## Fake backend
+
 https://jsonplaceholder.typicode.com
 
 ## Learn More
