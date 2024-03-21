@@ -53,21 +53,21 @@ export const {
     }),], // after sign in using GitHub => we want to add the user to our database and return the user from database
     callbacks: {
         async signIn({user, account, profile}) {
-            // console.log("callback for signIn")
+            // console.log("callback for signIn", user)
 
             //  if user is authenticated with GitHub account => connect to database and fnd this user
             if (account.provider === "github") {
-                console.log("github callback after sign in")
+
                 await connectToDb();
                 try {
                     // if user exist in database
-                    const user = await User.findOne({email: profile.email});
+                    user = await User.findOne({email: profile.email});
 
                     if (!user) {
                         const newUser = new User({
                             // NOTE: take care what the provider object return is and each field requires, note that in external provider authentication
                             // we will not be using password
-                            username: profile.login, email: profile.email, image: profile.avatar_url,
+                            username: profile.login, email: profile.email, img: profile.avatar_url, isAdmin: true,
                         });
 
                         await newUser.save();

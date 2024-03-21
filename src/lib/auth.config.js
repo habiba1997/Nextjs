@@ -7,14 +7,18 @@ export const authConfig = {
         // middleware need to be independent of any Nodejs library
         // therefore we added it into a separate file
         // FOR MORE DETAIL ABOUT CALLBACK FUNCTIONS CHECK https://next-auth.js.org/configuration/callbacks
-        async jwt({token, user}) {
+        async jwt({token, user, account}) {
             if (user) {
+                console.log("auth config", user)
                 token.id = user.id;
                 token.isAdmin = user.isAdmin;
             }
+            if (account && account.provider === "github") {
+                token.isAdmin = true;
+            }
             return token;
         },
-        async session({session, token}) {
+        async session({token, session}) {
             if (token) {
                 session.user.id = token.id;
                 session.user.isAdmin = token.isAdmin;

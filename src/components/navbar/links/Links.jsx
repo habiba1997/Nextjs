@@ -32,7 +32,8 @@ const Links = ({session}) => {
 
 
     // const session = await auth() => add it into navbar component
-    const isAdmin = true
+
+    const isAdmin = session ? session.user?.isAdmin : false
 
     return (
         <div className={styles.container}>
@@ -54,7 +55,8 @@ const Links = ({session}) => {
                 className={styles.menuButton}
 
                 onClick={() => setOpen((prev) => !prev)}
-            > Menu </button>
+            > Menu
+            </button>
             {open && (
                 <div className={styles.mobileLinks}>
                     {links.map((link) => (
