@@ -6,7 +6,7 @@ export const connectToDb = async () => {
     try {
         // WHENEVER WE REFRESH IT WILL CREATE A NEW CONNECTION
         if (connection.isConnected) {
-            console.log("Using existing connection");
+            // console.log("using existing connection");
             return;
         }
         // creating a new connection

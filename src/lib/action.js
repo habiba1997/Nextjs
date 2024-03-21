@@ -7,11 +7,11 @@ import {Post, User} from "@/lib/models";
 import {signIn, signOut} from "@/lib/auth";
 import bcrypt from "bcrypt";
 
-export const addPost = async (formData, prevState) => {
+export const addPost = async (prevState, formData) => {
     // const title = formData.get("title");
-    // const desc = formData.get("desc");
+    // const body = formData.get("body");
     // const slug = formData.get("slug");
-    const {title, body, slug, userId} = Object.fromEntries(formData);
+    const {title, body, slug, img, userId} = Object.fromEntries(formData);
 
     try {
         await connectToDb();
@@ -19,11 +19,13 @@ export const addPost = async (formData, prevState) => {
             title,
             body,
             slug,
+            img,
             userId,
         });
 
         await newPost.save();
         console.log("post saved to db");
+
         // invalidate the cache of get requests in /blog
         revalidatePath("/blog");
         revalidatePath("/admin");
@@ -116,42 +118,43 @@ export const login = async (prevState, formData) => {
         throw err;
     }
 };
-// export const addUser = async (prevState,formData) => {
-//   const { username, email, password, img } = Object.fromEntries(formData);
-//
-//   try {
-//     connectToDb();
-//     const newUser = new User({
-//       username,
-//       email,
-//       password,
-//       img,
-//     });
-//
-//     await newUser.save();
-//     console.log("saved to db");
-//     revalidatePath("/admin");
-//   } catch (err) {
-//     console.log(err);
-//     return { error: "Something went wrong!" };
-//   }
-// };
-//
-// export const deleteUser = async (formData) => {
-//   const { id } = Object.fromEntries(formData);
-//
-//   try {
-//     connectToDb();
-//
-//     await Post.deleteMany({ userId: id });
-//     await User.findByIdAndDelete(id);
-//     console.log("deleted from db");
-//     revalidatePath("/admin");
-//   } catch (err) {
-//     console.log(err);
-//     return { error: "Something went wrong!" };
-//   }
-// };
+export const addUser = async (prevState, formData) => {
+    const {username, email, password, img} = Object.fromEntries(formData);
+
+    try {
+        await connectToDb();
+        const newUser = new User({
+            username,
+            email,
+            password,
+            img,
+        });
+
+        await newUser.save();
+        console.log("saved to db");
+        // invalidate admin page as we have added a new user
+        revalidatePath("/admin");
+    } catch (err) {
+        console.log(err);
+        return {error: "Something went wrong!"};
+    }
+};
+
+export const deleteUser = async (formData) => {
+    const {id} = Object.fromEntries(formData);
+
+    try {
+        await connectToDb();
+
+        await Post.deleteMany({userId: id});
+        await User.findByIdAndDelete(id);
+        console.log("deleted from db");
+        revalidatePath("/admin");
+    } catch (err) {
+        console.log(err);
+        return {error: "Something went wrong!"};
+    }
+};
 
 
 
