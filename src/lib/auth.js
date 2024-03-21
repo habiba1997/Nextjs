@@ -4,7 +4,7 @@ import {connectToDb} from "@/lib/utils";
 import {User} from "@/lib/models";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-// import { authConfig } from "./auth.config";
+import {authConfig} from "@/lib/auth.config";
 
 const login = async (credentials) => {
     try {
@@ -34,7 +34,8 @@ export const {
     signIn,
     signOut,
 } = NextAuth({
-    // ...authConfig,
+    // here we are extending the object and merging the two
+    ...authConfig,
     providers: [GitHub({
         clientId: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET,
     }), CredentialsProvider({
@@ -77,6 +78,8 @@ export const {
                 }
             }
             return true;
-        }, // ...authConfig.callbacks,
+        },
+        // because the callback here will override the authConfigCallback
+        ...authConfig.callbacks,
     },
 });
