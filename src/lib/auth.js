@@ -11,27 +11,29 @@ const login = async (credentials) => {
         await connectToDb();
         const user = await User.findOne({username: credentials.username});
         if (!user) {
-            console.log("in login, user not found in database")
             throw new Error("Wrong credentials!");
         }
 
         const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
 
         if (!isPasswordCorrect) {
-            console.log("Wrong credentials!")
             throw new Error("Wrong credentials!");
         }
 
         return user;
     } catch (err) {
-        console.log("Failed to login!", err);
         throw new Error("Failed to login!");
     }
 };
 
 //  reach user sessions, use signIn and sign out methods
 // GET AND POST are called from inside /api/auth/[..nextauth]
-export const {handlers: {GET, POST}, auth, signIn, signOut,} = NextAuth({
+export const {
+    handlers: {GET, POST},
+    auth,
+    signIn,
+    signOut,
+} = NextAuth({
     // ...authConfig,
     providers: [GitHub({
         clientId: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET,
@@ -39,17 +41,18 @@ export const {handlers: {GET, POST}, auth, signIn, signOut,} = NextAuth({
         // we are handling the sign in from username and password
         async authorize(credentials) {
             try {
-                console.log("handling login")
+                // console.log("handling login")
                 return await login(credentials);
             } catch (err) {
+                // todo - why when returning error it caused such a headache
                 // we will not return any user
-                return {error: err};
+                return null;
             }
         },
     }),], // after sign in using GitHub => we want to add the user to our database and return the user from database
     callbacks: {
         async signIn({user, account, profile}) {
-            console.log("callback for signIn")
+            // console.log("callback for signIn")
 
             //  if user is authenticated with GitHub account => connect to database and fnd this user
             if (account.provider === "github") {

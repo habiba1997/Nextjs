@@ -57,7 +57,7 @@ export const handleLogout = async () => {
     await signOut();
 };
 
-export const register = async (formData, previousState) => {
+export const register = async (previousState, formData) => {
     const {username, email, password, img, passwordRepeat} =
         Object.fromEntries(formData);
 
@@ -93,7 +93,7 @@ export const register = async (formData, previousState) => {
 
         await newUser.save();
         console.log("user saved to db");
-
+        //  used to redirect to login page
         return {success: true};
     } catch (err) {
         console.log("registration error : ", err);
@@ -101,17 +101,17 @@ export const register = async (formData, previousState) => {
     }
 };
 
-export const login = async (formData, prevState) => {
+export const login = async (prevState, formData) => {
     const {username, password} = Object.fromEntries(formData);
-
     try {
-        console.log(username, password)
         await signIn("credentials", {username, password});
-    } catch (err) {
-        console.log("credentials sign in error: ", err);
 
+    } catch (err) {
+        // console.log(err);
         if (err.message.includes("CredentialsSignin")) {
             return {error: "Invalid username or password"};
+        }
+        if (err.message.includes("NEXT_REDIRECT")) {
         }
         throw err;
     }
